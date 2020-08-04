@@ -8,7 +8,7 @@ pipeline {
     agent { label 'linux1' }
     options {
         timestamps()
-        timeout(time: 3, unit: 'HOURS')
+        timeout(time: 10, unit: 'HOURS')
     }
 
 
