@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Corda OS Linux One Test') {
             steps {
-                sh "./gradlew clean test"
+                sh "./gradlew clean test --info"
             }
         }
     }
