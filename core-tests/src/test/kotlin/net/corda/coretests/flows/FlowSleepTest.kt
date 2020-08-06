@@ -18,11 +18,13 @@ import net.corda.testing.core.BOB_NAME
 import net.corda.testing.core.singleIdentity
 import net.corda.testing.driver.DriverParameters
 import net.corda.testing.driver.driver
+import org.junit.Ignore
 import org.junit.Test
 import java.time.Duration
 import java.time.Instant
 import kotlin.test.assertTrue
 
+@Ignore
 class FlowSleepTest {
 
     @Test(timeout = 300_000)
