@@ -267,7 +267,7 @@ class TwoPartyTradeFlowTests(private val anonymous: Boolean) {
 
             // Alice doesn't know that and carries on: she wants to know about the cash transactions he's trying to use.
             // She will wait around until Bob comes back.
-            assertThat(aliceNode.pumpReceive()).isNotNull()
+            assertThat(aliceNode.pumpReceive(block = true)).isNotNull()
 
             // FIXME: Knowledge of confidential identities is lost on node shutdown, so Bob's node now refuses to sign the
             //        transaction because it has no idea who the parties are.
