@@ -57,6 +57,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@Ignore
 class FlowMetadataRecordingTest {
 
     private val user = User("mark", "dadada", setOf(Permissions.all()))
