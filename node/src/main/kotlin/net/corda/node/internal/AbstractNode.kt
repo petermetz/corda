@@ -452,7 +452,7 @@ abstract class AbstractNode<S>(val configuration: NodeConfiguration,
         val props = configuration.dataSourceProperties
         if (props.isEmpty) throw DatabaseConfigurationException("There must be a database configured.")
         database.startHikariPool(props, metricRegistry) { dataSource, haveCheckpoints ->
-            SchemaMigration(dataSource, cordappLoader, configuration.baseDirectory, configuration.myLegalName)
+            SchemaMigration(dataSource, cordappLoader, configuration.networkParametersPath, configuration.myLegalName)
                     .checkOrUpdate(schemaService.internalSchemas, updateCoreSchemas, haveCheckpoints, true)
                     .checkOrUpdate(schemaService.appSchemas, updateAppSchemas, !updateAppSchemasWithCheckpoints && haveCheckpoints, false)
         }
@@ -462,7 +462,7 @@ abstract class AbstractNode<S>(val configuration: NodeConfiguration,
             Node.printBasicNodeInfo("Initialising CorDapps to get schemas created by hibernate")
             val trustRoot = configuration.initKeyStores(cryptoService)
             networkMapClient?.start(trustRoot)
-            val (netParams, signedNetParams) = NetworkParametersReader(trustRoot, networkMapClient, configuration.baseDirectory).read()
+            val (netParams, signedNetParams) = NetworkParametersReader(trustRoot, networkMapClient, configuration.networkParametersPath).read()
             log.info("Loaded network parameters: $netParams")
             check(netParams.minimumPlatformVersion <= versionInfo.platformVersion) {
                 "Node's platform version is lower than network's required minimumPlatformVersion"
@@ -484,7 +484,7 @@ abstract class AbstractNode<S>(val configuration: NodeConfiguration,
         if (hikariProperties.isEmpty) throw DatabaseConfigurationException("There must be a database configured.")
 
         val dataSource = DataSourceFactory.createDataSource(hikariProperties, metricRegistry = metricRegistry)
-        SchemaMigration(dataSource, cordappLoader, configuration.baseDirectory, configuration.myLegalName)
+        SchemaMigration(dataSource, cordappLoader, configuration.networkParametersPath, configuration.myLegalName)
                 .synchroniseSchemas(schemaService.appSchemas, false)
         Node.printBasicNodeInfo("CorDapp schemas synchronised")
     }
@@ -515,7 +515,7 @@ abstract class AbstractNode<S>(val configuration: NodeConfiguration,
         startShell()
         networkMapClient?.start(trustRoot)
 
-        val networkParametersReader = NetworkParametersReader(trustRoot, networkMapClient, configuration.baseDirectory)
+        val networkParametersReader = NetworkParametersReader(trustRoot, networkMapClient, configuration.networkParametersPath)
         val (netParams, signedNetParams) = networkParametersReader.read()
         log.info("Loaded network parameters: $netParams")
         check(netParams.minimumPlatformVersion <= versionInfo.platformVersion) {
@@ -981,7 +981,7 @@ abstract class AbstractNode<S>(val configuration: NodeConfiguration,
 
     protected open fun startHikariPool() =
             database.startHikariPool(configuration.dataSourceProperties, metricRegistry) { dataSource, haveCheckpoints ->
-        SchemaMigration(dataSource, cordappLoader, configuration.baseDirectory, configuration.myLegalName)
+        SchemaMigration(dataSource, cordappLoader, configuration.networkParametersPath, configuration.myLegalName)
                 .checkOrUpdate(schemaService.internalSchemas, runMigrationScripts, haveCheckpoints, true)
                 .checkOrUpdate(schemaService.appSchemas, runMigrationScripts, haveCheckpoints && !allowAppSchemaUpgradeWithCheckpoints, false)
     }
