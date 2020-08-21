@@ -158,16 +158,17 @@ data class Checkpoint(
         return copy(checkpointState = checkpointState.copy(sessionsToBeClosed = checkpointState.sessionsToBeClosed + sessionIds))
     }
 
-    fun removeSessionsToBeClosed(sessionIds: Set<SessionId>): Checkpoint {
-        return copy(checkpointState = checkpointState.copy(sessionsToBeClosed = checkpointState.sessionsToBeClosed - sessionIds))
-    }
-
     /**
      * Returns a copy of the Checkpoint with the specified session removed from the session map.
      * @param sessionIds the sessions to remove.
      */
     fun removeSessions(sessionIds: Set<SessionId>): Checkpoint {
-        return copy(checkpointState = checkpointState.copy(sessions = checkpointState.sessions - sessionIds))
+        return copy(
+            checkpointState = checkpointState.copy(
+                sessions = checkpointState.sessions - sessionIds,
+                sessionsToBeClosed = checkpointState.sessionsToBeClosed - sessionIds
+            )
+        )
     }
 
     /**
@@ -416,9 +417,13 @@ sealed class SubFlowVersion {
     data class CorDappFlow(override val platformVersion: Int, val corDappName: String, val corDappHash: SecureHash) : SubFlowVersion()
 }
 
-sealed class FlowWithClientIdStatus {
-    data class Active(val flowStateMachineFuture: CordaFuture<out FlowStateMachineHandle<out Any?>>) : FlowWithClientIdStatus()
-    data class Removed(val flowId: StateMachineRunId, val succeeded: Boolean) : FlowWithClientIdStatus()
+sealed class FlowWithClientIdStatus(val flowId: StateMachineRunId) {
+    class Active(
+        flowId: StateMachineRunId,
+        val flowStateMachineFuture: CordaFuture<out FlowStateMachineHandle<out Any?>>
+    ) : FlowWithClientIdStatus(flowId)
+
+    class Removed(flowId: StateMachineRunId, val succeeded: Boolean) : FlowWithClientIdStatus(flowId)
 }
 
 data class FlowResultMetadata(
