@@ -1,0 +1,36 @@
+
+plugins {
+    // Add the shadow plugin to the plugins classpath for the entire project.
+    // id 'com.github.johnrengelman.shadow' version '2.0.4' apply false
+    // id "com.gradle.build-scan" version "2.2.1"
+    // id "org.ajoberstar.grgit" version "4.0.0"
+    id 'org.jetbrains.kotlin.js' version '1.4.0'
+    // id 'net.corda.plugins.publish-utils' version "5.0.12"
+    // id 'net.corda.plugins.quasar-utils' version "5.0.12"
+    // id 'net.corda.plugins.api-scanner' version "5.0.12"
+    // id 'com.jfrog.artifactory' version "4.17.2"
+}
+
+// apply plugin: 'net.corda.plugins.quasar-utils'
+// apply plugin: 'net.corda.plugins.api-scanner'
+// apply plugin: 'com.jfrog.artifactory'
+// apply plugin: 'net.corda.plugins.publish-utils'
+apply plugin: 'org.jetbrains.kotlin.js'
+
+description 'Corda client RPC modules JS build'
+
+kotlin {
+    js {
+        // To build distributions for and run tests on browser or Node.js use one or both of:
+        browser()
+        nodejs()
+    }
+}
+
+dependencies {
+    // compile project(':core')
+    // compile project(':node-api')
+
+    // // For caches rather than guava
+    // compile "com.github.ben-manes.caffeine:caffeine:$caffeine_version"
+}
